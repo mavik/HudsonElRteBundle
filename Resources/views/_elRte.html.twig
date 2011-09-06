@@ -1,0 +1,45 @@
+{% if language is not defined %}{% set language = 'en' %}{% endif %}
+
+{% block elRTE %}
+
+<link rel="stylesheet" href="{{ asset('/bundles/hudsonelrte/css/elrte.full.css') }}" type="text/css" media="screen" charset="utf-8">
+<link rel="stylesheet" href="{{ asset('/bundles/hudsonelrte/css/elfinder.css') }}" type="text/css" media="screen" charset="utf-8">
+
+<script src="{{ asset('/bundles/hudsonelrte/js/elrte.min.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ asset('/bundles/hudsonelrte/js/i18n/elrte.' ~ language ~ '.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ asset('/bundles/hudsonelrte/js/elfinder.min.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ asset('/bundles/hudsonelrte/js/i18n/elfinder.' ~ language ~ '.js') }}" type="text/javascript" charset="utf-8"></script>
+
+{% endblock %}
+
+{% block elRTEInitScript %}
+<script type="text/javascript" charset="utf-8">
+    elRTE.prototype.options.panels.defaultPanel = [
+        'bold', 'italic', 'underline', 'forecolor', 'justifyleft', 'justifyright',
+        'justifycenter', 'justifyfull', 'formatblock', 'insertorderedlist', 'insertunorderedlist',
+        'link', 'image', 'flash'];
+    elRTE.prototype.options.toolbars.defaultToolbar = ['defaultPanel'];
+
+    function elRTEInit(elementId, opts) {
+        var defaults = {
+            lang: '{{ language }}',
+            styleWithCSS: false,
+            height: 200,
+            width: 800,
+            allowSource: true,
+            fmOpen: function(callback) {
+                $('<div id="myelfinder" />').elfinder({
+                    url : '{{ asset('/bundles/hudsonelrte/connectors/php/connector.php') }}',
+                    lang : '{{ language }}',
+                    dialog : { width : 900, modal : true, title : 'Files' }, // open in dialog window
+                    closeOnEditorCallback : true, // close after file select
+                    editorCallback : callback // pass callback to file manager
+                })
+            },
+            toolbar: 'defaultToolbar'
+        };
+        // create editor
+        $('#' + elementId).elrte($.extend(defaults, opts));
+    }
+</script>
+{% endblock %}
