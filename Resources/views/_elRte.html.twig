@@ -14,11 +14,12 @@
 
 {% block elRTEInitScript %}
 <script type="text/javascript" charset="utf-8">
-    elRTE.prototype.options.panels.defaultPanel = [
-        'bold', 'italic', 'underline', 'forecolor', 'justifyleft', 'justifyright',
-        'justifycenter', 'justifyfull', 'formatblock', 'insertorderedlist', 'insertunorderedlist',
-        'link', 'image', 'flash'];
-    elRTE.prototype.options.toolbars.defaultToolbar = ['defaultPanel'];
+    elRTE.prototype.options.panels.format = [
+        'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'formatblock', 'fontsize'
+    ];
+    elRTE.prototype.options.panels.elements = ['blockquote', 'div', 'stopfloat', 'css', 'nbsp'];
+    elRTE.prototype.options.panels.files = ['image', 'flash', 'elfinder'];
+    elRTE.prototype.options.toolbars.defaultToolbar = ['undoredo', 'copypaste', 'format', 'alignment', 'lists', 'links', 'files', 'tables', 'elements'];
 
     function elRTEInit(elementId, opts) {
         var defaults = {
@@ -28,18 +29,20 @@
             width: 800,
             allowSource: true,
             fmOpen: function(callback) {
-                $('<div id="myelfinder" />').elfinder({
-                    url : '{{ asset('/bundles/hudsonelrte/connectors/php/connector.php') }}',
+                jQuery('<div id="myelfinder" />').elfinder({
+                    url : '{{ path("elfinder_connector") }}',
                     lang : '{{ language }}',
                     dialog : { width : 900, modal : true, title : 'Files' }, // open in dialog window
                     closeOnEditorCallback : true, // close after file select
-                    editorCallback : callback // pass callback to file manager
+                    editorCallback : callback, // pass callback to file manager
+	            rememberLastDir : true,
+                    dragUploadAllow : true
                 })
             },
             toolbar: 'defaultToolbar'
         };
         // create editor
-        $('#' + elementId).elrte($.extend(defaults, opts));
+        jQuery('#' + elementId).elrte(jQuery.extend(defaults, opts));
     }
 </script>
 {% endblock %}
